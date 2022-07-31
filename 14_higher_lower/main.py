@@ -8,8 +8,13 @@ import data
 
 
 def new_game():
-    global used, points
+    global used, points, num_of_people
     used = []
+    i = 0
+    num_of_people = len(data.data)
+    while i < num_of_people:
+        used.append(i)
+        i += 1
     points = 0
 
 
@@ -31,10 +36,9 @@ def print_person(n):
 
 
 def get_random():
-    rand = random.randint(0, 49)
-    for i in used:
-        if i == rand:
-            rand = random.randint(0, 49)
+    rand = random.choice(used)
+    used.remove(rand)
+
     return rand
 
 
@@ -74,9 +78,6 @@ def main():
     new_game()
     rand1 = get_random()
     rand2 = get_random()
-
-    while rand1 == rand2:
-        rand2 = get_random()
 
     game(rand1, rand2)
 
