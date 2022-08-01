@@ -2,9 +2,36 @@ from os import system
 import time
 import random
 import sys
+from replit import clear
 
 import art
 import data
+
+#Test:
+"""
+def test_prog(p1, p2):
+    p1_followers = data.data[p1]["follower_count"]
+    p2_followers = data.data[p2]["follower_count"]
+
+    if p1_followers > p2_followers:
+        return "A"
+    else:
+        return "B"
+"""
+
+###
+
+
+def new_game_q():
+    newg = input(
+        "Do you want to start a new game? Type Y if you want. An other letter otherwise: "
+    )
+    if newg.lower() == 'y':
+        main()
+    else:
+        print("We will wait you! )\n")
+        time.sleep(4)
+        sys.exit()
 
 
 def new_game():
@@ -57,21 +84,27 @@ def game(n1, n2):
     while ch != 'a' and ch != 'b':
         ch = input("Who has more followers? Type A or B: ").lower()
 
+    # Code testing
+
+    # ch = test_prog(n1, n2).lower()
+    # print(f"Who has more followers? Type A or B: {ch}")
+    # time.sleep(1.5)
+
     if compare(n1, n2, ch)[1]:
         points += 1
-        new_random = get_random()
-        game(compare(n1, n2, ch)[0], new_random)
+        if points < 49:
+            new_random = get_random()
+            game(compare(n1, n2, ch)[0], new_random)
+        else:
+            system("clear")
+            print(art.logo)
+            print(
+                "Congratulations! You have finished the game and reached maximum 49 points!"
+            )
+            new_game_q()
     else:
         print(f"You're wrong! Your score is {points}.\n")
-        newg = input(
-            "Do you want to start a new game? Type Y if you want. An other letter otherwise: "
-        )
-        if newg.lower() == 'y':
-            main()
-        else:
-            print("We will wait you! )\n")
-            time.sleep(4)
-            sys.exit()
+        new_game_q()
 
 
 def main():
