@@ -1,4 +1,5 @@
 from turtle import Turtle
+from types import new_class
 
 START_POSITIONS = [(0, 0), (-20, 0), (-40, 0)]
 UP = 90
@@ -16,12 +17,18 @@ class Snake:
 
     def create_snake(self):
         for position in START_POSITIONS:
-            square = Turtle()
-            square.shape("square")
-            square.color("white")
-            square.penup()
-            square.goto(position)
-            self.segments.append(square)
+            self.add_segment(position)
+
+    def add_segment(self, position):
+        square = Turtle()
+        square.shape("square")
+        square.color("white")
+        square.penup()
+        square.goto(position)
+        self.segments.append(square)
+
+    def grow(self):
+        self.add_segment(self.segments[-1].position())
 
     def move(self):
         for i in range(len(self.segments) - 1, 0, -1):
