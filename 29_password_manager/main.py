@@ -1,3 +1,4 @@
+import json
 from tkinter import *
 from tkinter import messagebox
 import random
@@ -62,19 +63,62 @@ def save():
             title="Error",
             message=
             f"All spaces need to be filled.\nStill need to enter:\n{missing}")
+
     else:
         is_ok = messagebox.askokcancel(
             title=webs,
             message=
-            f"Yu have entered:\nEmail: {usern}\nPassword: {passw}\n\nConfirm to save"
+            f"You have entered:\nEmail: {usern}\nPassword: {passw}\n\nConfirm to save"
         )
         if is_ok:
+            # .TXT file
             with open("data.txt", "a") as file:
                 file.write(tosave)
+
+            # .JSON file
+            new_data = {webs: {"email": usern, "password": passw}}
+            try:
+                with open("data.json", "r") as file:
+                    data_dic = json.load(file)
+                    data_dic.update(new_data)
+            except FileNotFoundError:
+                print("file not found")
+                data_dic = new_data
+
+            with open("data.json", "w") as file:
+                json.dump(data_dic, file, indent=4)
+
             website_entry.delete(0, END)
             website_entry.focus()
             # username_entry.delete(0, END)
             password_entry.delete(0, END)
+
+
+# ---------------------------- SEARCH DATA ------------------------------- #
+
+
+def search():
+    website = website_entry.get().strip()
+    try:
+        with open("data.json", "r") as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        messagebox.showerror(title="No data", message="No data was saved yet")
+    else:
+        isfound = False
+        for data_web in data:
+            if data_web.lower() == website.lower():
+                isfound = True
+                toprint = f"Email: {data[data_web]['email']}\nPassword: {data[data_web]['password']}"
+                messagebox.showinfo(title=data_web, message=toprint)
+                break
+        if isfound == False:
+            messagebox.showerror(
+                title="No data",
+                message=f"No saved data for <{website}> website")
+    finally:
+        website_entry.delete(0, END)
+        website_entry.focus()
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -100,8 +144,8 @@ password_label.grid(column=0, row=3, pady=4)
 
 # ---- Inputs-----#
 
-website_entry = Entry(width=36)
-website_entry.grid(column=1, row=1, columnspan=2, sticky=W + E)
+website_entry = Entry(width=23)
+website_entry.grid(column=1, row=1, sticky=W + E)
 website_entry.focus()
 
 username_entry = Entry(width=36)
@@ -109,14 +153,16 @@ username_entry.grid(column=1, row=2, columnspan=2, sticky=W + E)
 username_entry.insert(0, "disaby@gmail.com")
 
 password_entry = Entry(width=23)
-password_entry.grid(column=1, row=3, sticky=W)
+password_entry.grid(column=1, row=3, sticky=W + E)
 
 # ---- Buttons-----#
+search_button = Button(text="Search", command=search)
+search_button.grid(column=2, row=1, sticky=W + E)
 
 gener_pass_button = Button(text="Generate password", command=generate)
-gener_pass_button.grid(column=2, row=3, sticky=E)
+gener_pass_button.grid(column=2, row=3, sticky=W + E)
 
 add_button = Button(text="Add", width=36, command=save)
-add_button.grid(column=1, row=4, columnspan=2, sticky=W + E)
+add_button.grid(column=1, row=4, columnspan=2, sticky=E)
 
 window.mainloop()

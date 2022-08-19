@@ -29,5 +29,13 @@ df_alphabet = pandas.read_csv("NATO-alphabet-start/nato_phonetic_alphabet.csv")
 
 alphabet = {row.letter: row.code for (index, row) in df_alphabet.iterrows()}
 
-input = input("Enter your name: ")
-print([alphabet[letter.upper()] for letter in input])
+while True:
+    inputv = input("Enter your name: ").upper()
+    output = []
+    try:
+        for letter in inputv:
+            output.append(alphabet[letter])
+    except KeyError:
+        print("Enter only letters")
+    else:
+        print(output)
